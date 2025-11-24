@@ -656,6 +656,115 @@
         margin-top: var(--space-16);
       }
 
+      /* AI Lab */
+      .ai-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--space-16);
+        margin-top: var(--space-16);
+      }
+
+      .ai-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-20);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .ai-card h3 {
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: var(--space-8);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        background: var(--color-secondary);
+        color: var(--color-text);
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-sm);
+      }
+
+      .provider-select {
+        width: 100%;
+        padding: var(--space-8);
+        border-radius: var(--radius-base);
+        border: 1px solid var(--color-border);
+        background: var(--color-background);
+        color: var(--color-text);
+      }
+
+      .ai-log {
+        max-height: 260px;
+        overflow-y: auto;
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-base);
+        padding: var(--space-12);
+        background: var(--color-secondary);
+        margin-bottom: var(--space-12);
+      }
+
+      .ai-message {
+        margin-bottom: var(--space-12);
+        padding: var(--space-8);
+        border-radius: var(--radius-base);
+        background: var(--color-surface);
+        border: 1px solid var(--color-card-border-inner);
+      }
+
+      .ai-message.user {
+        border-left: 4px solid var(--color-primary);
+      }
+
+      .ai-message.ai {
+        border-left: 4px solid var(--color-warning);
+      }
+
+      .ai-input {
+        width: 100%;
+        min-height: 80px;
+        padding: var(--space-12);
+        border-radius: var(--radius-base);
+        border: 1px solid var(--color-border);
+        background: var(--color-background);
+        color: var(--color-text);
+        font-family: var(--font-family-base);
+      }
+
+      .flashcard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: var(--space-12);
+        margin-top: var(--space-12);
+      }
+
+      .flashcard {
+        background: var(--color-surface);
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-12);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .flashcard h4 {
+        margin-top: 0;
+        color: var(--color-primary);
+      }
+
+      .adaptive-summary {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: var(--space-12);
+        margin-top: var(--space-8);
+      }
+
       /* Exam Checklist */
       .checklist-progress {
         background: var(--color-surface);
@@ -916,6 +1025,7 @@
                     <button id="tab-dashboard" class="nav-tab active" role="tab" aria-selected="true" aria-controls="dashboard" data-section="dashboard">Dashboard</button>
                     <button id="tab-references" class="nav-tab" role="tab" aria-selected="false" aria-controls="references" data-section="references">Quick Reference</button>
                     <button id="tab-practice" class="nav-tab" role="tab" aria-selected="false" aria-controls="practice" data-section="practice">Practice Questions</button>
+                    <button id="tab-ai" class="nav-tab" role="tab" aria-selected="false" aria-controls="ai-lab" data-section="ai-lab">AI Lab</button>
                     <button id="tab-checklist" class="nav-tab" role="tab" aria-selected="false" aria-controls="checklist" data-section="checklist">Exam Checklist</button>
                 </div>
                 <button id="theme-toggle" class="btn btn--secondary btn--sm" aria-label="Toggle theme">Toggle Theme</button>
@@ -1011,15 +1121,72 @@
                     <select id="topic-filter">
                         <!-- Options will be dynamically inserted here -->
                     </select>
+                    <div class="badge" id="adaptive-status" aria-live="polite">AI difficulty: medium</div>
                     <button id="start-quiz-btn" class="btn btn--primary" aria-label="Start quiz">Start Quiz</button>
                 </div>
-                
+
                 <div id="quiz-container" class="quiz-container" aria-live="polite">
                     <!-- Quiz content will be displayed here -->
                 </div>
                 
                 <div id="quiz-results" class="quiz-results hidden" aria-live="polite">
                     <!-- Quiz results will be displayed here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Lab Section -->
+        <section id="ai-lab" class="section" role="tabpanel" aria-labelledby="tab-ai">
+            <div class="container">
+                <h2>AI Lab</h2>
+                <p>Switch between OpenAI Codex and Google Gemini, chat with the AI tutor, spin up flashcards, and let the quiz adapt to you.</p>
+                <div class="ai-grid">
+                    <div class="ai-card">
+                        <h3>⚙️ AI Settings</h3>
+                        <p>Choose which backend powers tutoring, flashcards, and adaptive quizzes.</p>
+                        <label for="ai-provider-select">AI Provider</label>
+                        <select id="ai-provider-select" class="provider-select" aria-label="AI provider selector">
+                            <option value="openai">OpenAI Codex</option>
+                            <option value="gemini">Google Gemini</option>
+                        </select>
+                        <div class="adaptive-summary">
+                            <span class="badge" id="provider-badge">Active: OpenAI Codex</span>
+                            <small id="api-key-hint">API keys loaded from ai-config.js</small>
+                        </div>
+                    </div>
+
+                    <div class="ai-card">
+                        <h3>🎓 AI Tutor</h3>
+                        <div id="ai-tutor-log" class="ai-log" aria-live="polite" aria-label="AI tutor conversation"></div>
+                        <label for="ai-tutor-input" class="sr-only">Ask the tutor</label>
+                        <textarea id="ai-tutor-input" class="ai-input" placeholder="Ask a physiology question or request an explanation..."></textarea>
+                        <div class="adaptive-summary">
+                            <button id="ask-ai-btn" class="btn btn--primary">Ask Tutor</button>
+                            <span class="badge" id="tutor-status">Ready</span>
+                        </div>
+                    </div>
+
+                    <div class="ai-card">
+                        <h3>🃏 Gemini Flashcards</h3>
+                        <p>Create targeted flashcards directly from a lecture.</p>
+                        <label for="flashcard-lecture-select">Lecture source</label>
+                        <select id="flashcard-lecture-select" class="provider-select"></select>
+                        <div class="adaptive-summary">
+                            <button id="generate-flashcards-btn" class="btn btn--secondary">Generate Flashcards</button>
+                            <span class="badge" id="flashcard-status">Gemini ready</span>
+                        </div>
+                        <div id="flashcard-output" class="flashcard-grid" aria-live="polite"></div>
+                    </div>
+
+                    <div class="ai-card">
+                        <h3>📈 Adaptive Quiz Coach</h3>
+                        <p>Difficulty adjusts in real time based on your answers and AI insights.</p>
+                        <div class="adaptive-summary">
+                            <span class="badge" id="current-difficulty">Current level: medium</span>
+                            <button id="sync-difficulty-btn" class="btn btn--secondary btn--sm">Sync with AI</button>
+                        </div>
+                        <ul id="adaptive-notes"></ul>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1079,6 +1246,7 @@
       </div>
     </footer>
 
+    <script src="ai-config.js"></script>
     <script>
       // =================================================================================
       // DATA
@@ -1117,12 +1285,16 @@
       ];
 
       const practiceQuestions = [
-          { question: "What is the primary cause of the rising phase of an action potential?", options: ["K+ efflux", "Na+ influx", "Ca2+ influx", "Cl- influx"], correct: "Na+ influx", explanation: "The rapid influx of Na+ ions through voltage-gated channels causes the membrane to depolarize, leading to the rising phase of the action potential.", category: "neural" },
-          { question: "Which of the following muscle types relies on the calmodulin-MLCK system for contraction?", options: ["Skeletal", "Cardiac", "Smooth", "All of the above"], correct: "Smooth", explanation: "Smooth muscle contraction is initiated by Ca2+ binding to calmodulin, which then activates Myosin Light Chain Kinase (MLCK) to phosphorylate myosin heads.", category: "muscle" },
-          { question: "What is the main function of outer hair cells in the cochlea?", options: ["Transmit auditory signals to the brain", "Provide mechanical amplification", "Detect linear acceleration", "Detect rotational movement"], correct: "Provide mechanical amplification", explanation: "Outer hair cells act as cochlear amplifiers, actively changing their length to amplify the motion of the basilar membrane, which enhances hearing sensitivity and frequency selectivity.", category: "sensory" },
-          { question: "The absolute refractory period during an action potential is caused by:", options: ["The opening of K+ channels", "The inactivation of Na+ channels", "The closing of Ca2+ channels", "Membrane hyperpolarization"], correct: "The inactivation of Na+ channels", explanation: "The inactivation gates of voltage-gated Na+ channels close during depolarization and do not reopen until the membrane repolarizes, preventing the initiation of another action potential.", category: "neural" },
-          { question: "The direct coupling of electrical excitation to Ca2+ release in skeletal muscle is mediated by:", options: ["Troponin and tropomyosin", "The sarcoplasmic reticulum", "The DHPR-RyR complex", "Actin-myosin binding"], correct: "The DHPR-RyR complex", explanation: "The Dihydropyridine Receptor (DHPR) is a voltage sensor that is physically linked to the Ryanodine Receptor (RyR) on the sarcoplasmic reticulum. This mechanical coupling allows for direct, rapid release of Ca2+ upon membrane depolarization.", category: "muscle" },
-          { question: "The 'labeled line' principle in sensory systems states that:", options: ["The intensity of a stimulus is coded by action potential frequency", "The brain interprets the modality of a sensation based on which specific pathway is activated", "Sensory adaptation reduces the response to a constant stimulus", "Receptive fields determine spatial acuity"], correct: "The brain interprets the modality of a sensation based on which specific pathway is activated", explanation: "This principle means that a signal from the optic nerve is always perceived as light, regardless of how it was stimulated (e.g., by light or by pressure on the eyeball).", category: "sensory" }
+          { question: "What is the primary cause of the rising phase of an action potential?", options: ["K+ efflux", "Na+ influx", "Ca2+ influx", "Cl- influx"], correct: "Na+ influx", explanation: "The rapid influx of Na+ ions through voltage-gated channels causes the membrane to depolarize, leading to the rising phase of the action potential.", category: "neural", difficulty: "easy" },
+          { question: "Which of the following muscle types relies on the calmodulin-MLCK system for contraction?", options: ["Skeletal", "Cardiac", "Smooth", "All of the above"], correct: "Smooth", explanation: "Smooth muscle contraction is initiated by Ca2+ binding to calmodulin, which then activates Myosin Light Chain Kinase (MLCK) to phosphorylate myosin heads.", category: "muscle", difficulty: "easy" },
+          { question: "What is the main function of outer hair cells in the cochlea?", options: ["Transmit auditory signals to the brain", "Provide mechanical amplification", "Detect linear acceleration", "Detect rotational movement"], correct: "Provide mechanical amplification", explanation: "Outer hair cells act as cochlear amplifiers, actively changing their length to amplify the motion of the basilar membrane, which enhances hearing sensitivity and frequency selectivity.", category: "sensory", difficulty: "easy" },
+          { question: "The absolute refractory period during an action potential is caused by:", options: ["The opening of K+ channels", "The inactivation of Na+ channels", "The closing of Ca2+ channels", "Membrane hyperpolarization"], correct: "The inactivation of Na+ channels", explanation: "The inactivation gates of voltage-gated Na+ channels close during depolarization and do not reopen until the membrane repolarizes, preventing the initiation of another action potential.", category: "neural", difficulty: "medium" },
+          { question: "The direct coupling of electrical excitation to Ca2+ release in skeletal muscle is mediated by:", options: ["Troponin and tropomyosin", "The sarcoplasmic reticulum", "The DHPR-RyR complex", "Actin-myosin binding"], correct: "The DHPR-RyR complex", explanation: "The Dihydropyridine Receptor (DHPR) is a voltage sensor that is physically linked to the Ryanodine Receptor (RyR) on the sarcoplasmic reticulum. This mechanical coupling allows for direct, rapid release of Ca2+ upon membrane depolarization.", category: "muscle", difficulty: "medium" },
+          { question: "The 'labeled line' principle in sensory systems states that:", options: ["The intensity of a stimulus is coded by action potential frequency", "The brain interprets the modality of a sensation based on which specific pathway is activated", "Sensory adaptation reduces the response to a constant stimulus", "Receptive fields determine spatial acuity"], correct: "The brain interprets the modality of a sensation based on which specific pathway is activated", explanation: "This principle means that a signal from the optic nerve is always perceived as light, regardless of how it was stimulated (e.g., by light or by pressure on the eyeball).", category: "sensory", difficulty: "medium" },
+          { question: "Why is myelination especially important for large-diameter axons?", options: ["It enables graded potentials to travel farther", "It reduces the need for voltage-gated channels", "It enables saltatory conduction that preserves speed over long distances", "It increases the number of synaptic vesicles"], correct: "It enables saltatory conduction that preserves speed over long distances", explanation: "Myelin reduces capacitance and increases membrane resistance, allowing action potentials to jump between nodes of Ranvier and maintain rapid conduction in long axons.", category: "neural", difficulty: "hard" },
+          { question: "During sustained submaximal exercise, which motor units are recruited first?", options: ["Fast glycolytic units", "Slow oxidative units", "Fast oxidative-glycolytic units", "Random recruitment"], correct: "Slow oxidative units", explanation: "Size principle recruitment activates fatigue-resistant slow oxidative fibers before larger fast units, matching force with metabolic cost.", category: "muscle", difficulty: "hard" },
+          { question: "Which vestibular structure primarily detects rotational acceleration?", options: ["Utricle", "Saccule", "Semicircular canals", "Organ of Corti"], correct: "Semicircular canals", explanation: "The semicircular canals contain hair cells that respond to angular acceleration, allowing the brain to track head rotation.", category: "sensory", difficulty: "medium" },
+          { question: "How does temporal summation increase muscle tension?", options: ["By recruiting additional muscle fibers", "By increasing action potential amplitude", "By delivering stimuli before Ca2+ fully resequesters, stacking force", "By lengthening the sarcomere"], correct: "By delivering stimuli before Ca2+ fully resequesters, stacking force", explanation: "When stimuli arrive rapidly, Ca2+ remains elevated and crossbridge cycling continues, producing greater force until fused tetanus.", category: "muscle", difficulty: "medium" }
       ];
 
       const checklistItemsData = {
@@ -1130,6 +1302,116 @@
           muscle: ["Sliding filament theory", "Crossbridge cycling mechanism", "Excitation-contraction coupling", "Comparison of three muscle types", "Length-tension relationship", "Cardiac pacemaker mechanism", "Smooth muscle regulation"],
           sensory: ["Sensory transduction principles", "Labeled line principle", "Hair cell function (hearing/balance)", "Phototransduction cascade (vision)", "Taste and smell mechanisms", "Proprioception (spindles/GTOs)", "Spinal reflex pathways"]
       };
+
+      class AIService {
+          constructor(config = {}) {
+              this.provider = config.defaultProvider || 'openai';
+              this.config = config;
+          }
+
+          setProvider(provider) {
+              this.provider = provider;
+              return this.provider;
+          }
+
+          getProvider() {
+              return this.provider;
+          }
+
+          getApiKey(provider = this.provider) {
+              if (provider === 'gemini') {
+                  return this.config.GEMINI_API_KEY;
+              }
+              return this.config.OPENAI_API_KEY;
+          }
+
+          async requestCompletion(prompt, options = {}) {
+              const provider = options.provider || this.provider;
+              const apiKey = this.getApiKey(provider);
+
+              if (!apiKey || apiKey.includes('YOUR_')) {
+                  return this.buildFallback(prompt, options.context, 'No API key provided');
+              }
+
+              const requestBody = provider === 'gemini'
+                  ? { contents: [{ parts: [{ text: prompt }] }] }
+                  : { model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], temperature: options.temperature || 0.4 };
+
+              const url = provider === 'gemini'
+                  ? `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`
+                  : 'https://api.openai.com/v1/chat/completions';
+
+              const headers = provider === 'gemini'
+                  ? { 'Content-Type': 'application/json' }
+                  : { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` };
+
+              try {
+                  const response = await fetch(url, { method: 'POST', headers, body: JSON.stringify(requestBody) });
+                  if (!response.ok) throw new Error('API request failed');
+                  const data = await response.json();
+                  return this.extractText(data, provider);
+              } catch (error) {
+                  return this.buildFallback(prompt, options.context, error.message);
+              }
+          }
+
+          extractText(data, provider) {
+              if (provider === 'gemini') {
+                  return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Gemini response unavailable.';
+              }
+              return data.choices?.[0]?.message?.content || 'OpenAI response unavailable.';
+          }
+
+          buildFallback(prompt, context = 'general', reason = '') {
+              const note = reason ? ` (offline fallback: ${reason})` : ' (offline fallback)';
+              if (context === 'flashcards') {
+                  return [
+                      { front: 'Core idea', back: `Key takeaway: ${prompt.split('.')[0] || 'concept'}${note}` },
+                      { front: 'Mechanism', back: 'Explain the sequence of events and the controlling variables.' },
+                      { front: 'Clinical angle', back: 'Relate this concept to a lab or bedside scenario.' }
+                  ];
+              }
+              if (context === 'difficulty') {
+                  return { level: 'medium', rationale: `Using heuristic difficulty from recent answers${note}` };
+              }
+              return `Here is a structured explanation based on your prompt${note}: ${prompt.substring(0, 140)}...`;
+          }
+
+          async generateTutorResponse(question) {
+              const prompt = `You are an expert physiology tutor. Provide a concise, stepwise answer with one vivid analogy. Question: ${question}`;
+              return this.requestCompletion(prompt, { context: 'tutor', temperature: 0.6 });
+          }
+
+          async generateFlashcards(lecture) {
+              const lectureNotes = `Title: ${lecture.title}. Objectives: ${lecture.objectives.join('; ')}. Mechanisms: ${lecture.mechanisms.join('; ')}. Clinical: ${lecture.clinical}.`;
+              const prompt = `Create 4 Q&A flashcards from these lecture notes. Use short phrases for the front, and detailed yet concise answers for the back. Return as numbered list.`;
+              const raw = await this.requestCompletion(`${prompt} ${lectureNotes}`, { context: 'flashcards', provider: 'gemini' });
+
+              if (Array.isArray(raw)) {
+                  return raw;
+              }
+
+              return raw.split(/\n+/).filter(Boolean).slice(0, 4).map((line, index) => {
+                  const [front, ...rest] = line.replace(/^\d+\.\s*/, '').split(' - ');
+                  return { front: front || `Card ${index + 1}`, back: rest.join(' - ') || 'Answer pending' };
+              });
+          }
+
+          async suggestDifficulty(history, currentLevel) {
+              const correctRate = history.length ? history.filter(h => h.isCorrect).length / history.length : 0.5;
+              const heuristic = correctRate > 0.75 ? 'hard' : correctRate < 0.45 ? 'easy' : 'medium';
+              const prompt = `You are adapting quiz difficulty. Current level: ${currentLevel}. History: ${history.map(h => `${h.isCorrect ? '✅' : '❌'} ${h.question}`).join(' | ') || 'No answers yet'}. Recommend easy, medium, or hard with one-line rationale.`;
+              const raw = await this.requestCompletion(prompt, { context: 'difficulty' });
+
+              if (raw && typeof raw === 'object' && raw.level) {
+                  return raw;
+              }
+
+              const lower = String(raw).toLowerCase();
+              const suggestedLevel = ['easy', 'medium', 'hard'].find(level => lower.includes(level)) || heuristic;
+              return { level: suggestedLevel, rationale: typeof raw === 'string' ? raw : `Set to ${heuristic} based on accuracy.` };
+          }
+      }
 
       // =================================================================================
       // APPLICATION STATE
@@ -1139,13 +1421,20 @@
           completedLectures: new Set(),
           completedChecklist: new Set(),
           currentTheme: 'light',
+          aiProvider: (window.AI_CONFIG && window.AI_CONFIG.defaultProvider) || 'openai',
+          tutorMessages: [],
+          flashcards: [],
           quiz: {
               active: false,
               questions: [],
               currentIndex: 0,
-              answers: []
+              answers: [],
+              difficulty: 'medium',
+              history: []
           }
       };
+
+      const aiService = new AIService(window.AI_CONFIG || {});
 
       // =================================================================================
       // DOM ELEMENTS
@@ -1165,6 +1454,20 @@
           quizResults: document.getElementById('quiz-results'),
           topicFilter: document.getElementById('topic-filter'),
           startQuizBtn: document.getElementById('start-quiz-btn'),
+          aiProviderSelect: document.getElementById('ai-provider-select'),
+          providerBadge: document.getElementById('provider-badge'),
+          aiTutorInput: document.getElementById('ai-tutor-input'),
+          aiTutorLog: document.getElementById('ai-tutor-log'),
+          askAIBtn: document.getElementById('ask-ai-btn'),
+          tutorStatus: document.getElementById('tutor-status'),
+          flashcardSelect: document.getElementById('flashcard-lecture-select'),
+          flashcardBtn: document.getElementById('generate-flashcards-btn'),
+          flashcardOutput: document.getElementById('flashcard-output'),
+          flashcardStatus: document.getElementById('flashcard-status'),
+          currentDifficulty: document.getElementById('current-difficulty'),
+          adaptiveNotes: document.getElementById('adaptive-notes'),
+          syncDifficultyBtn: document.getElementById('sync-difficulty-btn'),
+          adaptiveStatus: document.getElementById('adaptive-status'),
       };
 
       // =================================================================================
@@ -1183,6 +1486,12 @@
           renderNeurotransmitters();
           renderChecklist();
           renderTopicFilter();
+          populateFlashcardLectures();
+          hydrateAISettings();
+          renderTutorLog();
+          renderFlashcards();
+          updateAdaptiveUI();
+          updateAdaptiveNotes();
           updateProgress();
           applyTheme();
           resetQuizView();
@@ -1197,6 +1506,10 @@
           elements.themeToggleBtn.addEventListener('click', toggleTheme);
           elements.resetProgressBtn.addEventListener('click', resetProgress);
           elements.startQuizBtn.addEventListener('click', startQuiz);
+          elements.aiProviderSelect.addEventListener('change', handleProviderChange);
+          elements.askAIBtn.addEventListener('click', handleTutorAsk);
+          elements.flashcardBtn.addEventListener('click', handleFlashcardGeneration);
+          elements.syncDifficultyBtn.addEventListener('click', syncDifficultyWithAI);
           // Keyboard shortcuts for answer selection and next
           document.addEventListener('keydown', handleQuizKeyDown);
       }
@@ -1209,7 +1522,9 @@
           const appState = {
               completedLectures: [...state.completedLectures],
               completedChecklist: [...state.completedChecklist],
-              currentTheme: state.currentTheme
+              currentTheme: state.currentTheme,
+              aiProvider: state.aiProvider,
+              quizDifficulty: state.quiz.difficulty
           };
           localStorage.setItem('phyl2002AppState', JSON.stringify(appState));
       }
@@ -1221,6 +1536,8 @@
               state.completedLectures = new Set(parsedState.completedLectures);
               state.completedChecklist = new Set(parsedState.completedChecklist);
               state.currentTheme = parsedState.currentTheme || 'light';
+              state.aiProvider = parsedState.aiProvider || state.aiProvider;
+              state.quiz.difficulty = parsedState.quizDifficulty || state.quiz.difficulty;
           } else {
               // First time load: detect preferred theme
               state.currentTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -1247,8 +1564,147 @@
           localStorage.removeItem('phyl2002AppState');
           state.completedLectures.clear();
           state.completedChecklist.clear();
-          state.quiz = { active: false, questions: [], currentIndex: 0, answers: [] };
+          state.tutorMessages = [];
+          state.flashcards = [];
+          state.quiz = { active: false, questions: [], currentIndex: 0, answers: [], difficulty: 'medium', history: [] };
           renderAll();
+      }
+
+      // =================================================================================
+      // AI BACKEND + EXPERIENCES
+      // =================================================================================
+
+      function hydrateAISettings() {
+          aiService.setProvider(state.aiProvider);
+          if (elements.aiProviderSelect) {
+              elements.aiProviderSelect.value = state.aiProvider;
+          }
+          updateProviderBadge();
+      }
+
+      function updateProviderBadge() {
+          const label = state.aiProvider === 'gemini' ? 'Google Gemini' : 'OpenAI Codex';
+          elements.providerBadge.textContent = `Active: ${label}`;
+          elements.flashcardStatus.textContent = state.aiProvider === 'gemini' ? 'Gemini ready' : 'Using selected provider';
+      }
+
+      function handleProviderChange(event) {
+          state.aiProvider = event.target.value;
+          aiService.setProvider(state.aiProvider);
+          updateProviderBadge();
+          saveState();
+      }
+
+      function renderTutorLog() {
+          if (!state.tutorMessages.length) {
+              elements.aiTutorLog.innerHTML = '<p class="text-center">Ask the AI tutor anything about cellular physiology.</p>';
+              return;
+          }
+
+          elements.aiTutorLog.innerHTML = state.tutorMessages.map(msg => `
+              <div class="ai-message ${msg.role}">
+                  <strong>${msg.role === 'user' ? 'You' : 'AI Tutor'}:</strong> ${msg.content}
+              </div>
+          `).join('');
+      }
+
+      function setTutorStatus(text) {
+          elements.tutorStatus.textContent = text;
+      }
+
+      async function handleTutorAsk() {
+          const question = elements.aiTutorInput.value.trim();
+          if (!question) return;
+
+          state.tutorMessages.push({ role: 'user', content: question });
+          renderTutorLog();
+          setTutorStatus('Thinking...');
+          elements.aiTutorInput.value = '';
+
+          try {
+              const response = await aiService.generateTutorResponse(question);
+              state.tutorMessages.push({ role: 'ai', content: response });
+              setTutorStatus(`Answered via ${aiService.getProvider()}`);
+          } catch (error) {
+              state.tutorMessages.push({ role: 'ai', content: 'The AI tutor is unavailable right now.' });
+              setTutorStatus('Offline');
+          }
+
+          renderTutorLog();
+      }
+
+      function populateFlashcardLectures() {
+          if (!elements.flashcardSelect.options.length) {
+              lecturesData.forEach(lec => {
+                  const option = document.createElement('option');
+                  option.value = lec.id;
+                  option.textContent = `Lecture ${lec.id}: ${lec.title}`;
+                  elements.flashcardSelect.appendChild(option);
+              });
+          }
+      }
+
+      function renderFlashcards() {
+          if (!state.flashcards.length) {
+              elements.flashcardOutput.innerHTML = '<p class="text-center">Flashcards will appear here.</p>';
+              return;
+          }
+
+          elements.flashcardOutput.innerHTML = state.flashcards.map(card => `
+              <div class="flashcard">
+                  <h4>${card.front}</h4>
+                  <p>${card.back}</p>
+              </div>
+          `).join('');
+      }
+
+      async function handleFlashcardGeneration() {
+          const lectureId = parseInt(elements.flashcardSelect.value, 10);
+          const lecture = lecturesData.find(l => l.id === lectureId);
+          if (!lecture) return;
+
+          elements.flashcardStatus.textContent = 'Generating...';
+          try {
+              const cards = await aiService.generateFlashcards(lecture);
+              state.flashcards = cards;
+              elements.flashcardStatus.textContent = 'Complete';
+          } catch (error) {
+              state.flashcards = [];
+              elements.flashcardStatus.textContent = 'Failed to generate';
+          }
+
+          renderFlashcards();
+      }
+
+      function updateAdaptiveNotes(text = '') {
+          if (!text) {
+              elements.adaptiveNotes.innerHTML = '<li>Answer questions to let the AI tune difficulty.</li>';
+              return;
+          }
+          elements.adaptiveNotes.innerHTML = `<li>${text}</li>`;
+      }
+
+      function updateAdaptiveUI() {
+          const difficultyLabel = state.quiz.difficulty || 'medium';
+          elements.currentDifficulty.textContent = `Current level: ${difficultyLabel}`;
+          elements.adaptiveStatus.textContent = `AI difficulty: ${difficultyLabel}`;
+      }
+
+      async function syncDifficultyWithAI() {
+          const suggestion = await aiService.suggestDifficulty(state.quiz.answers, state.quiz.difficulty);
+          state.quiz.difficulty = suggestion.level || state.quiz.difficulty;
+          updateAdaptiveNotes(suggestion.rationale || 'Difficulty updated.');
+          updateAdaptiveUI();
+          saveState();
+      }
+
+      async function adjustQuizDifficulty() {
+          state.quiz.history = [...state.quiz.answers];
+          const suggestion = await aiService.suggestDifficulty(state.quiz.history, state.quiz.difficulty);
+          state.quiz.difficulty = suggestion.level || state.quiz.difficulty;
+          updateAdaptiveNotes(suggestion.rationale || 'Difficulty adjusted.');
+          updateAdaptiveUI();
+          saveState();
       }
 
       // =================================================================================
@@ -1442,18 +1898,27 @@
 
       function startQuiz() {
           const filter = elements.topicFilter.value;
-          const filteredQuestions = filter === 'all' 
-              ? [...practiceQuestions] 
+          const filterByCategory = filter === 'all'
+              ? [...practiceQuestions]
               : practiceQuestions.filter(q => q.category === filter);
+
+          let filteredQuestions = filterByCategory.filter(q => (q.difficulty || 'medium') === state.quiz.difficulty);
+
+          if (!filteredQuestions.length) {
+              filteredQuestions = filterByCategory;
+          }
 
           state.quiz = {
               active: true,
               questions: shuffleArray(filteredQuestions),
               currentIndex: 0,
               answers: [],
+              difficulty: state.quiz.difficulty,
+              history: [],
           };
-          
+
           elements.quizResults.classList.add('hidden');
+          updateAdaptiveUI();
           displayQuestion();
       }
 
@@ -1465,11 +1930,15 @@
 
           const q = state.quiz.questions[state.quiz.currentIndex];
           const options = shuffleArray([...q.options]);
+          const difficulty = q.difficulty || state.quiz.difficulty;
 
           elements.quizContainer.innerHTML = `
               <div class="question-card">
-                  <div class="question-text">
-                      Question ${state.quiz.currentIndex + 1} of ${state.quiz.questions.length}: ${q.question}
+                  <div class="adaptive-summary">
+                      <div class="question-text">
+                          Question ${state.quiz.currentIndex + 1} of ${state.quiz.questions.length}: ${q.question}
+                      </div>
+                      <span class="badge">${difficulty} difficulty</span>
                   </div>
                   <div class="option-list">
                       ${options.map((opt, idx) => `<button class="option-button" data-answer="${opt}" data-index="${idx+1}">${opt}</button>`).join('')}
@@ -1509,9 +1978,11 @@
           const feedback = document.getElementById('question-feedback');
           feedback.innerHTML = `<div class="explanation"><strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong> ${question.explanation}</div>`;
           feedback.classList.remove('hidden');
-          
+
           document.getElementById('next-btn').classList.remove('hidden');
           document.getElementById('next-btn').addEventListener('click', nextQuestion);
+
+          adjustQuizDifficulty();
       }
 
       function nextQuestion() {
@@ -1570,6 +2041,7 @@
           state.quiz.active = false;
           elements.quizContainer.innerHTML = '<p class="text-center">Select a topic and click "Start Quiz" to begin.</p>';
           elements.quizResults.classList.add('hidden');
+          updateAdaptiveUI();
       }
 
       function handleQuizKeyDown(e) {

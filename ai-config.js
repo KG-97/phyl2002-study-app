@@ -1,0 +1,5 @@
+window.AI_CONFIG = {
+  defaultProvider: 'openai',
+  OPENAI_API_KEY: 'YOUR_OPENAI_API_KEY',
+  GEMINI_API_KEY: 'YOUR_GEMINI_API_KEY',
+};
