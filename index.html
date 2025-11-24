@@ -993,6 +993,54 @@
       .hidden { display: none !important; }
       .text-center { text-align: center; }
 
+      .data-alert-container {
+        max-width: 960px;
+        margin: var(--space-16) auto;
+        padding: 0 var(--space-20);
+      }
+
+      .data-alert {
+        border: 1px solid var(--color-card-border);
+        border-radius: var(--radius-lg);
+        padding: var(--space-16);
+        background: var(--color-surface);
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: var(--space-12);
+        align-items: flex-start;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .data-alert__icon {
+        font-size: var(--font-size-xl);
+      }
+
+      .data-alert__title {
+        margin: 0 0 var(--space-8);
+        font-size: var(--font-size-lg);
+      }
+
+      .data-alert__list {
+        margin: 0;
+        padding-left: var(--space-16);
+        color: var(--color-text-secondary);
+      }
+
+      .data-alert--success {
+        border-color: rgba(var(--color-success-rgb), 0.4);
+        background: var(--color-success-light);
+      }
+
+      .data-alert--warning {
+        border-color: rgba(var(--color-warning-rgb), 0.4);
+        background: var(--color-warning-light);
+      }
+
+      .data-alert--error {
+        border-color: rgba(var(--color-error-rgb), 0.4);
+        background: rgba(var(--color-error-rgb), 0.1);
+      }
+
       /* Responsive */
       @media (max-width: 768px) {
         .nav-container, .nav-controls {
@@ -1033,6 +1081,8 @@
             </div>
         </div>
     </nav>
+
+    <div class="data-alert-container" id="dataset-alert" aria-live="polite"></div>
 
     <main class="main-content">
         <!-- Dashboard Section -->
@@ -1265,7 +1315,13 @@
           { id: 11, title: "Hearing and Balance", category: "sensory", objectives: ["Describe hair cell transduction", "Explain frequency coding", "Understand basilar membrane", "Describe vestibular function"], mechanisms: ["Tip links open mechanosensitive channels", "Tonotopic organization along cochlea", "Outer hair cells amplify response", "Stereocilia deflection direction matters"], clinical: "Hearing loss from hair cell damage" },
           { id: 12, title: "Olfaction and Gustation", category: "sensory", objectives: ["Explain olfactory transduction", "Describe population coding", "List taste modalities", "Understand taste cell types"], mechanisms: ["G-protein (Golf) → cAMP → channels", "Each odorant activates multiple receptors", "Five basic tastes: sweet, sour, salty, bitter, umami", "Different transduction mechanisms per taste"], clinical: "Anosmia affects taste perception" },
           { id: 13, title: "Vision (Phototransduction)", category: "sensory", objectives: ["Explain phototransduction cascade", "Compare rods vs cones", "Describe color vision", "Understand retinal processing"], mechanisms: ["Light → rhodopsin → transducin → PDE → cGMP decrease", "Channel closure causes hyperpolarization", "Three cone types enable color vision", "Center-surround receptive fields"], clinical: "Color blindness from cone mutations" },
-          { id: 14, title: "Motor Circuits and Reflexes", category: "sensory", objectives: ["Explain stretch reflex circuit", "Describe Golgi tendon organs", "Define inhibitory interneurons", "Understand gamma motor system"], mechanisms: ["Monosynaptic Ia → alpha motor neuron", "GTOs detect muscle tension via Ib fibers", "Reciprocal inhibition via Ia interneurons", "Gamma motor neurons maintain spindle sensitivity"], clinical: "Reflexes test spinal cord function" }
+          { id: 14, title: "Motor Circuits and Reflexes", category: "sensory", objectives: ["Explain stretch reflex circuit", "Describe Golgi tendon organs", "Define inhibitory interneurons", "Understand gamma motor system"], mechanisms: ["Monosynaptic Ia → alpha motor neuron", "GTOs detect muscle tension via Ib fibers", "Reciprocal inhibition via Ia interneurons", "Gamma motor neurons maintain spindle sensitivity"], clinical: "Reflexes test spinal cord function" },
+          { id: 15, title: "Membrane Transport and Homeostasis", category: "neural", objectives: ["Differentiate passive vs active transport", "Explain primary vs secondary active transport", "Describe osmolarity vs tonicity", "Relate transporters to excitability"], mechanisms: ["Simple and facilitated diffusion down gradients", "Na+/K+ ATPase maintains gradients and resting potential", "Co-transport (symport) and counter-transport (antiport) leverage existing gradients", "Changes in extracellular K+ shift resting membrane potential"], clinical: "Pump blockers like ouabain disrupt excitability and can provoke arrhythmias" },
+          { id: 16, title: "Autonomic Nervous System Integration", category: "neural", objectives: ["Contrast sympathetic vs parasympathetic outflow", "Trace preganglionic and postganglionic neurotransmitters", "Identify dual innervation examples", "Explain autonomic tone"], mechanisms: ["Thoracolumbar sympathetic vs craniosacral parasympathetic origins", "Preganglionic ACh on nicotinic receptors; postganglionic NE or ACh depending on target", "Adrenal medulla releases circulating catecholamines", "Baseline tone allows graded control of heart rate and vascular resistance"], clinical: "Pharmacology of adrenergic and cholinergic receptors underlies common cardiovascular drugs" },
+          { id: 17, title: "Synaptic Plasticity and Learning", category: "neural", objectives: ["Define LTP and LTD", "Describe NMDA receptor role", "Explain Hebbian plasticity", "Identify structural changes in potentiated synapses"], mechanisms: ["Coincident pre- and postsynaptic activity relieves Mg2+ block of NMDA receptors", "Ca2+ influx activates kinases that insert AMPA receptors", "Prolonged low-frequency activity can trigger phosphatases and LTD", "Spine enlargement and new receptor trafficking support memory traces"], clinical: "Disruption of hippocampal LTP is linked to cognitive impairment in dementia" },
+          { id: 18, title: "Muscle Metabolism and Fatigue", category: "muscle", objectives: ["Identify ATP sources during contraction", "Compare aerobic vs anaerobic metabolism", "Explain causes of muscle fatigue", "Relate fiber type to metabolic profile"], mechanisms: ["Immediate phosphagen system (creatine phosphate) sustains first seconds", "Oxidative phosphorylation dominates endurance; glycolysis fuels high-intensity bursts", "Fatigue from Pi accumulation, H+ buildup, and impaired Ca2+ release", "Type I fibers rich in mitochondria and capillaries; Type IIb rely on glycolysis"], clinical: "McArdle disease (glycogen phosphorylase deficiency) limits rapid ATP supply" },
+          { id: 19, title: "Cardiac Action Potentials and ECG", category: "muscle", objectives: ["Describe nodal vs ventricular AP shapes", "Link ionic currents to ECG waves", "Explain refractory periods", "Relate conduction pathways to intervals"], mechanisms: ["Nodal cells use funny current (If) and Ca2+ upstroke; ventricular cells use fast Na+ upstroke", "Plateau from L-type Ca2+ current balances K+ efflux", "Long refractory period prevents tetanus", "P wave = atrial depolarization, QRS = ventricular depolarization, T wave = repolarization"], clinical: "Prolonged QT from delayed repolarization predisposes to arrhythmias" },
+          { id: 20, title: "Visual Pathways and Processing", category: "sensory", objectives: ["Trace retinal output to cortex", "Differentiate magnocellular vs parvocellular streams", "Describe binocular integration", "Explain visual field deficits from lesions"], mechanisms: ["Retinal ganglion axons → optic nerve → chiasm → tract → lateral geniculate → optic radiations → V1", "M pathway emphasizes motion and luminance; P pathway emphasizes color and fine detail", "Inputs from both eyes converge in ocular dominance columns", "Lesions yield predictable deficits such as homonymous hemianopia"], clinical: "Pituitary tumors compressing the chiasm produce bitemporal hemianopia" }
       ];
 
       const ionChannelsData = [
@@ -1283,6 +1339,102 @@
           { name: "Serotonin (5-HT)", location: "Raphe nuclei", receptors: "Multiple 5-HT subtypes", func: "Mood, sleep, appetite regulation" },
           { name: "Noradrenaline", location: "Locus coeruleus", receptors: "Alpha & Beta adrenergic", func: "Arousal, alertness, fight-or-flight response" }
       ];
+
+      function validateDatasets() {
+          const results = { warnings: [], errors: [] };
+          const idSet = new Set();
+          const categories = new Set();
+
+          lecturesData.forEach((lecture, index) => {
+              if (lecture.id === undefined || lecture.id === null) {
+                  results.errors.push(`Lecture at index ${index} is missing an id.`);
+                  return;
+              }
+
+              if (idSet.has(lecture.id)) {
+                  results.errors.push(`Duplicate lecture id detected: ${lecture.id}`);
+              }
+              idSet.add(lecture.id);
+
+              ['title', 'category', 'objectives', 'mechanisms', 'clinical'].forEach(key => {
+                  if (lecture[key] === undefined || lecture[key] === null) {
+                      results.errors.push(`Lecture ${lecture.id} is missing required field: ${key}`);
+                  }
+              });
+
+              if (lecture.category) {
+                  categories.add(lecture.category);
+              }
+
+              if (!Array.isArray(lecture.objectives) || lecture.objectives.length === 0) {
+                  results.warnings.push(`Lecture ${lecture.id} objectives should be a non-empty array.`);
+              }
+
+              if (!Array.isArray(lecture.mechanisms) || lecture.mechanisms.length === 0) {
+                  results.warnings.push(`Lecture ${lecture.id} mechanisms should be a non-empty array.`);
+              }
+          });
+
+          practiceQuestions.forEach((question, index) => {
+              const required = ['question', 'options', 'correct', 'explanation', 'category'];
+              required.forEach(key => {
+                  if (question[key] === undefined || question[key] === null) {
+                      results.errors.push(`Practice question ${index + 1} is missing required field: ${key}`);
+                  }
+              });
+
+              if (!Array.isArray(question.options) || question.options.length < 2) {
+                  results.errors.push(`Practice question ${index + 1} should include at least two options.`);
+              } else if (!question.options.includes(question.correct)) {
+                  results.errors.push(`Practice question ${index + 1} correct answer is not listed in options.`);
+              }
+
+              if (question.category && categories.size && !categories.has(question.category)) {
+                  results.warnings.push(`Practice question ${index + 1} uses category "${question.category}" not found in lectures.`);
+              }
+          });
+
+          neurotransmittersData.forEach((entry, index) => {
+              ['name', 'location', 'receptors', 'func'].forEach(key => {
+                  if (entry[key] === undefined || entry[key] === null) {
+                      results.warnings.push(`Neurotransmitter entry ${index + 1} is missing ${key}.`);
+                  }
+              });
+          });
+
+          return results;
+      }
+
+      function renderDataAlert(validationResults) {
+          const alertHost = document.getElementById('dataset-alert');
+          if (!alertHost) return;
+
+          const { warnings, errors } = validationResults;
+          const status = errors.length ? 'error' : warnings.length ? 'warning' : 'success';
+          const icon = status === 'success' ? '✅' : status === 'warning' ? '⚠️' : '❌';
+          const title = status === 'success'
+              ? 'Datasets validated successfully'
+              : status === 'warning'
+              ? 'Datasets validated with warnings'
+              : 'Dataset errors detected';
+
+          const messages = errors.length ? errors : warnings.length ? warnings : ['All datasets passed validation checks.'];
+
+          const alert = document.createElement('div');
+          alert.className = `data-alert data-alert--${status}`;
+          alert.innerHTML = `
+              <div class="data-alert__icon" aria-hidden="true">${icon}</div>
+              <div>
+                  <h3 class="data-alert__title">${title}</h3>
+                  <ul class="data-alert__list">
+                      ${messages.map(msg => `<li>${msg}</li>`).join('')}
+                  </ul>
+              </div>
+          `;
+
+          alertHost.innerHTML = '';
+          alertHost.appendChild(alert);
+      }
 
       const practiceQuestions = [
           { question: "What is the primary cause of the rising phase of an action potential?", options: ["K+ efflux", "Na+ influx", "Ca2+ influx", "Cl- influx"], correct: "Na+ influx", explanation: "The rapid influx of Na+ ions through voltage-gated channels causes the membrane to depolarize, leading to the rising phase of the action potential.", category: "neural", difficulty: "easy" },
@@ -1475,6 +1627,13 @@
       // =================================================================================
 
       document.addEventListener('DOMContentLoaded', () => {
+          const validationResults = validateDatasets();
+          renderDataAlert(validationResults);
+
+          if (validationResults.errors.length) {
+              console.error('Dataset validation errors:', validationResults.errors);
+          }
+
           loadState();
           initializeEventListeners();
           renderAll();
